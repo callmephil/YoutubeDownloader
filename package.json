@@ -1,0 +1,45 @@
+{
+  "name": "ytmusicmanager",
+  "version": "1.0.0",
+  "description": "Music Manager Based Youtube API Educational Project",
+  "main": "index.js",
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/callmephil/YoutubeDownloader.git"
+  },
+  "scripts": {
+    "start": "nodemon --exec babel-node ./src/index.js",
+    "build:clean": "rimraf ./build",
+    "build:build": "babel src --out-dir ./build --source-maps",
+    "build": "npm run build:clean && npm run build:build",
+    "production": "node ./build/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Callmephil",
+  "license": "GPL-2.0-only",
+  "dependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/node": "^7.5.0",
+    "@babel/preset-env": "^7.5.4",
+    "@babel/register": "^7.4.4",
+    "axios": "^0.19.0",
+    "dotenv": "^8.0.0",
+    "ffmpeg": "0.0.4",
+    "ffmpeg-static": "^2.5.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs-extra": "^8.1.0",
+    "music-metadata": "^4.2.1",
+    "node-id3": "^0.1.8",
+    "nodemon": "^1.19.1",
+    "path": "^0.12.7",
+    "rimraf": "^2.6.3",
+    "sanitize-filename": "^1.6.1",
+    "ytdl-core": "^0.29.3"
+  }
+}
