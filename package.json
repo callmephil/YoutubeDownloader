@@ -13,7 +13,7 @@
     "url": "https://github.com/callmephil/YoutubeDownloader.git"
   },
   "scripts": {
-    "start": "nodemon --exec babel-node ./src/index.js",
+    "start": "nodemon --exec babel-node ./src/main.js",
     "build:clean": "rimraf ./build",
     "build:build": "babel src --out-dir ./build --source-maps",
     "build": "npm run build:clean && npm run build:build",

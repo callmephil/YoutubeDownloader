@@ -1,7 +1,7 @@
 require('dotenv').config()
 import axios from "axios";
 
-const YOUTUBE_API_KEY = process.env.NODE_YOUTUBE_API_KEY_0;
+const YOUTUBE_API_KEY = process.env.NODE_YOUTUBE_API_KEY_1;
 
 const youtubeAPI = async (url, params) => {
   try {
@@ -63,7 +63,7 @@ export const getChannelListItems = async (ChannelID, nextPageToken) => {
     const result = await youtubeAPI("search", {
         params: {
             channelId: ChannelID,
-            maxResults: 50,
+            maxResults: 25,
             pageToken: nextPageToken,
             order:'date',
             regionCode: 'LB'
@@ -74,19 +74,22 @@ export const getChannelListItems = async (ChannelID, nextPageToken) => {
         return { nextPageToken: result.nextPageToken, data: result.items };
 }
 
-export const Paginator = async (ChannelID, nextPageToken = '', vidList = []) => {
+export const Paginator = async (ChannelID, nextPageToken = '', vidList = {}, objKey = 0) => {
     const omfg = await getChannelListItems(ChannelID, nextPageToken);
-
+    const list = [];
     if (omfg.data)
     {
         omfg.data.forEach(element => {
-            vidList.push(element.id.videoId);
+          if (element.id.videoId)
+            list.push({vidID: element.id.videoId, title: element.snippet.title});
         });
+        if (list.length != 0)
+          vidList[objKey] = list;
     }
-
     if (omfg.nextPageToken)
     {
-        await Paginator(ChannelID, omfg.nextPageToken, vidList);
+        objKey++;
+        await Paginator(ChannelID, omfg.nextPageToken, vidList, objKey);
     }
     
     return vidList;
