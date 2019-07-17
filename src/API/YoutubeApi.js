@@ -81,7 +81,7 @@ export const Paginator = async (ChannelID, nextPageToken = '', vidList = {}, obj
     {
         omfg.data.forEach(element => {
           if (element.id.videoId)
-            list.push({vidID: element.id.videoId, title: element.snippet.title});
+            list.push(element.id.videoId);
         });
         if (list.length != 0)
           vidList[objKey] = list;

@@ -6,14 +6,14 @@ const settings = {
     SLEEP_TIMER: 60000,
 } 
 
-const downloadMultiples = (vidList) => {
-    const requests = vidList.map(vid => startDownload(vid.vidID, vid.title));
+const downloadMultiples = (idList) => {
+    const requests = idList.map(id => startDownload(id));
     
     return Promise.all(requests);
 }
 
-const downloadSingle = (url) => {
-    return Promise.resolve(startDownload(url.vidID, url.title)) 
+const downloadSingle = (id) => {
+    return Promise.resolve(startDownload(id)) 
 }
 
 const GetAllVideosFromChannel = async (url) => {
@@ -35,16 +35,56 @@ const GetAllVideosFromChannel = async (url) => {
     return result;
 };
 
-const ElectroPose = 'UCpO0OSNAFLRUpGrNz-bJJHA';
-const main = async () => {
-    // foreach objectOfArrayUrl
-    const result = await GetAllVideosFromChannel(ElectroPose);
-    console.log(result);
-    // if (result.success)
-    //     console.log('All downloads Completed');
-    // console.log(list);
-    // const result = await startDownload('_DjE4gbIVZk');
-    // console.log(result);
+const getLinkTypeAndID = async (url, id, type) => {
+    if (url && id && type)
+        return {url: url, id: id, type: type}; 
+    // Replace this function by something nicer.
+    const types = ['channel', 'playlist', 'watch'];
+    const refractors = {'channel': '/', 'playlist': '?list=', 'watch': '?v='};
+
+    if (url.includes(types[2]) && url.includes('list='))
+        return { url: url, id: null, type: null }
+    
+    types.forEach(el => {
+        if (url.search(el) !== -1) 
+        {
+            id = url.substr(url.lastIndexOf(refractors[el]) + refractors[el].length);
+            type = el;
+        }
+    });
+
+    return {url: url, id: id, type: type};
+}
+const main = async (args) => {
+    if (args && args[0])
+    {
+        const info = await getLinkTypeAndID(args[0]);
+        let result;
+        switch (info.type)
+        {
+            case 'channel':
+                console.log('Channel Being Parsed');
+                result = await GetAllVideosFromChannel(info.id);
+            break;
+            case 'playlist':
+                console.log('playlist not done yet');
+                // result = await GetAllVideosFromPlaylist(info.id)
+            break;
+            case 'watch':
+                console.log('Video Being Parsed');
+                result = await startDownload(info.id);
+            break;
+            default:
+                console.error(`unfound type ${info.type}`)
+        }
+        console.log(result);
+    }
+    console.log('job done');
 }
 
-main();
+// const ElectroPose = 'UCpO0OSNAFLRUpGrNz-bJJHA';
+//  console.log(getLinkTypeAndID('https://www.youtube.com/watch?v=AOoWctmgKQs'));
+//  console.log(getLinkTypeAndID('https://www.youtube.com/playlist?list=PLx2MPyvI7z7FIJ4j3vK_pxLcMxcQqWQKC'));
+//  console.log(getLinkTypeAndID('https://www.youtube.com/channel/UCpO0OSNAFLRUpGrNz-bJJHA'));
+//  console.log(getLinkTypeAndID('https://www.youtube.com/watch?v=vNpwOXp5mFQ&list=PLx2MPyvI7z7FIJ4j3vK_pxLcMxcQqWQKC&index=3&t=0s'));
+main(process.argv.splice(2));
