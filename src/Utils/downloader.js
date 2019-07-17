@@ -7,7 +7,7 @@ import fs from 'fs-extra';
 
 const Settings = {
     'userDownloadsFolder': './Downloads',
-    'bitRate': 120,
+    'bitRate': 320,
 }
 
 const getVideoAsMp4 = (urlLink, userProvidedPath, title) => {
