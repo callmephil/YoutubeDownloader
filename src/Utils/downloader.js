@@ -42,11 +42,14 @@ const convertMp4ToMp3 = (paths) => {
     });
 }
 
-export const startDownload = async (id, title) => {
+export const startDownload = async (id, customFolderName) => {
     try {
         console.log(`startDownload for videoID: ${id}`)
         // Tell the user we are getting the video info, and call the function to do so.
+        const DownloadFolder = customFolderName != '' ? Settings.userDownloadsFolder + `/${customFolderName}` :
+        Settings.userDownloadsFolder;
 
+            
         const info = await ytdl.getInfo(id);
         const vidTime = Math.floor(info.length_seconds / 60);
         if (vidTime < 1 || vidTime > 10)
@@ -54,7 +57,7 @@ export const startDownload = async (id, title) => {
         // Given the id of the video, the path in which to store the output, and the video title
         // download the video as an audio only mp4 and write it to a temp file then return
         // the full path for the tmp file, the path in which its stored, and the title of the desired output.
-        const paths = await getVideoAsMp4(id, Settings.userDownloadsFolder, info.title);
+        const paths = await getVideoAsMp4(id, DownloadFolder, info.title);
         // Pass the returned paths and info into the function which will convert the mp4 tmp file into
         // the desired output mp3 file.
         await convertMp4ToMp3(paths);

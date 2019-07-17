@@ -1,7 +1,7 @@
 require('dotenv').config()
 import axios from "axios";
 
-const YOUTUBE_API_KEY = process.env.NODE_YOUTUBE_API_KEY_1;
+const YOUTUBE_API_KEY = process.env.NODE_YOUTUBE_API_KEY_3;
 
 const youtubeAPI = async (url, params) => {
   try {

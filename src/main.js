@@ -1,13 +1,15 @@
 import * as YoutubeAPI from './API/YoutubeApi';
 import { startDownload } from './Utils/downloader';
+import * as utils from './Utils/utils';
 
 const settings = {
     MINIMUM_TO_SLEEP: 5,
     SLEEP_TIMER: 60000,
 } 
+let _customFolderName = '';
 
 const downloadMultiples = (idList) => {
-    const requests = idList.map(id => startDownload(id));
+    const requests = idList.map(id => startDownload(id, _customFolderName));
     
     return Promise.all(requests);
 }
@@ -56,14 +58,18 @@ const getLinkTypeAndID = async (url, id, type) => {
     return {url: url, id: id, type: type};
 }
 const main = async (args) => {
-    if (args && args[0])
+    if (args && args.length >= 0)
     {
+        _customFolderName = args[1];
+        if (_customFolderName)
+            utils.CreateFolderIfNotExists(_customFolderName);
+
         const info = await getLinkTypeAndID(args[0]);
         let result;
         switch (info.type)
         {
             case 'channel':
-                console.log('Channel Being Parsed');
+                console.log(`Channel: ${info.id} being parsed`);
                 result = await GetAllVideosFromChannel(info.id);
             break;
             case 'playlist':
