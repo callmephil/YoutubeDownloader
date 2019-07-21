@@ -15,3 +15,18 @@ Small NodeJS Personal Project to automate, download and manage playlists and cha
     * [ ] Recognize Favorite Songs
     * [ ] Search Similar Songs
     * [ ] Download/Sort Songs that I might like
+
+### Packages
+1. Youtube API
+2. ytdl-core
+3. fluent-ffmpeg
+4. ffmpeg-static
+5. sanitize-filename
+6. fs-extra
+7. music-metadata
+8. node-id3
+
+### Idea and base code from leerob.
+https://github.com/leerob/youtube-to-mp3
+
+### References

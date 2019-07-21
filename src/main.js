@@ -4,7 +4,7 @@ import * as utils from './Utils/utils';
 
 const settings = {
     MINIMUM_TO_SLEEP: 5,
-    SLEEP_TIMER: 60000,
+    SLEEP_TIMER: 300000,
 } 
 let _customFolderName = '';
 
@@ -60,9 +60,11 @@ const getLinkTypeAndID = async (url, id, type) => {
 const main = async (args) => {
     if (args && args.length >= 0)
     {
-        _customFolderName = args[1];
-        if (_customFolderName)
+        if (args[1])
+        {
+            _customFolderName = args[1];
             utils.CreateFolderIfNotExists(_customFolderName);
+        }
 
         const info = await getLinkTypeAndID(args[0]);
         let result;
