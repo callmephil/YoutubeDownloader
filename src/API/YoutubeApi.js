@@ -89,8 +89,9 @@ export const Paginator = async (ChannelID, nextPageToken = '', vidList = {}, obj
     if (omfg.nextPageToken)
     {
         objKey++;
-        await Paginator(ChannelID, omfg.nextPageToken, vidList, objKey);
+        return await Paginator(ChannelID, omfg.nextPageToken, vidList, objKey);
     }
+    else
     
-    return vidList;
+      return vidList;
 }
