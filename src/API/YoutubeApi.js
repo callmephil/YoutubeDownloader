@@ -1,11 +1,12 @@
 require('dotenv').config()
 import axios from "axios";
 
-const YOUTUBE_API_KEY = process.env.NODE_YOUTUBE_API_KEY_2;
+const YOUTUBE_API_KEY = process.env.NODE_YOUTUBE_API_KEY_0;
 
 const youtubeAPI = async (url, params) => {
   try {
-    params.params.part = "snippet";
+    if (!params.params.part)
+      params.params.part = 'snippet';
     params.params.key = YOUTUBE_API_KEY;
 
     const response = await axios.get(
@@ -32,15 +33,19 @@ const getPlayListSize = async playlistID => {
   return size;
 };
 
-export const getPlayListItems = async playlistID => {
-  const playListSize = await getPlayListSize(playlistID);
+export const getPlayListItems = async (playlistID, nextPageToken) => {
+  // const playListSize = await getPlayListSize(playlistID);
   const result = await youtubeAPI("playlistItems", {
     params: {
-      maxResults: playListSize,
+      part: 'contentDetails',
+      maxResults: 25,
+      pageToken: nextPageToken,
       playlistId: playlistID
     }
   });
-  return result.items;
+
+  if (result)
+    return { nextPageToken: result.nextPageToken, data: result.items };
 };
 
 
@@ -74,24 +79,26 @@ export const getChannelListItems = async (ChannelID, nextPageToken) => {
         return { nextPageToken: result.nextPageToken, data: result.items };
 }
 
-export const Paginator = async (ChannelID, nextPageToken = '', vidList = {}, objKey = 0) => {
-    const omfg = await getChannelListItems(ChannelID, nextPageToken);
+export const Paginator = async (type, typeID, nextPageToken = '', vidList = {}, objKey = 0) => {
+    const omfg = type === 'channel' ? 
+    await getChannelListItems(typeID, nextPageToken) 
+    : 
+    await getPlayListItems(typeID, nextPageToken);
+
     const list = [];
     if (omfg.data)
     {
         omfg.data.forEach(element => {
-          if (element.id.videoId)
-            list.push(element.id.videoId);
+          const el = element.contentDetails ? element.contentDetails : element.id;
+          if (el.videoId)
+            list.push(el.videoId);
         });
         if (list.length != 0)
           vidList[objKey] = list;
     }
+
     if (omfg.nextPageToken)
-    {
-        objKey++;
-        return await Paginator(ChannelID, omfg.nextPageToken, vidList, objKey);
-    }
+      return await Paginator(type, typeID, omfg.nextPageToken, vidList, ++objKey);
     else
-    
       return vidList;
 }

@@ -18,8 +18,8 @@ const downloadSingle = (id) => {
     return Promise.resolve(startDownload(id)) 
 }
 
-const GetAllVideosFromChannel = async (url) => {
-    const videoList = await YoutubeAPI.Paginator(url);
+const GetAllVideosFromList = async (type, url) => {
+    const videoList = await YoutubeAPI.Paginator(type, url);
     const list = Object.values(videoList);
     const sleep = (milliseconds) => {
         console.log(`GetAllVideosFromChannel request sleep of ${milliseconds}`);
@@ -37,6 +37,7 @@ const GetAllVideosFromChannel = async (url) => {
     return result;
 };
 
+// !Improve This.
 const getLinkTypeAndID = async (url, id, type) => {
     if (url && id && type)
         return {url: url, id: id, type: type}; 
@@ -58,7 +59,7 @@ const getLinkTypeAndID = async (url, id, type) => {
     return {url: url, id: id, type: type};
 }
 const main = async (args) => {
-    if (args && args.length >= 0)
+    if (args && args.length > 0)
     {
         if (args[1])
         {
@@ -71,22 +72,19 @@ const main = async (args) => {
         switch (info.type)
         {
             case 'channel':
-                console.log(`Channel: ${info.id} being parsed`);
-                result = await GetAllVideosFromChannel(info.id);
-            break;
             case 'playlist':
-                console.log('playlist not done yet');
-                // result = await GetAllVideosFromPlaylist(info.id)
+                console.log(`${info.type}: ${info.id} being parsed`);
+                result = await GetAllVideosFromList(info.type, info.id)
             break;
             case 'watch':
-                console.log('Video Being Parsed');
+                console.log(`Video: ${info.id} Being Parsed`);
                 result = await startDownload(info.id);
             break;
             default:
                 console.error(`unfound type ${info.type}`)
         }
         console.log(result);
-    }
+    } else console.error('please provide arguments $title $folder');
     console.log('job done');
 }
 

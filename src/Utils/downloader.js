@@ -78,10 +78,6 @@ export const startDownload = async (id, customFolderName) => {
         if (isTimeBetween(info.length_seconds, Settings.VIDEO_MINIMUM_TIME, Settings.VIDEO_MAXIMUM_TIME))
             return {id: id, status: status_code.rejected}
         
-        const info = await ytdl.getInfo(id);
-        const vidTime = Math.floor(info.length_seconds / 60);
-        if (vidTime < 1 || vidTime > 10)
-            return {id: id, status: 'failed'}
         // Given the id of the video, the path in which to store the output, and the video title
         // download the video as an audio only mp4 and write it to a temp file then return
         // the full path for the tmp file, the path in which its stored, and the title of the desired output.
